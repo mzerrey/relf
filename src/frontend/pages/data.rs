@@ -1,0 +1,283 @@
+use yew::prelude::*;
+use wasm_bindgen::prelude::*;
+use web_sys::{window, HtmlInputElement, HtmlTextAreaElement};
+use js_sys;
+use crate::frontend::components::navigation::Navigation;
+use crate::frontend::services::storage;
+
+#[function_component(Data)]
+pub fn data() -> Html {
+    let json_content = use_state(|| storage::export_to_json());
+    let show_import_modal = use_state(|| false);
+    let import_json = use_state(|| String::new());
+    let file_input_ref = use_node_ref();
+    let textarea_ref = use_node_ref();
+
+    // Refresh/Reset all data to defaults
+    let refresh_data = {
+        let json_content = json_content.clone();
+        Callback::from(move |_: MouseEvent| {
+            match storage::reset_to_defaults() {
+                Ok(_) => {
+                    json_content.set(storage::export_to_json());
+                    web_sys::console::log_1(&"All data reset to defaults!".into());
+                }
+                Err(e) => {
+                    web_sys::console::log_1(&format!("Failed to reset data: {}", e).into());
+                }
+            }
+        })
+    };
+
+    // Copy JSON data to clipboard
+    let copy_json = {
+        let json_content = json_content.clone();
+        Callback::from(move |_| {
+            let text_to_copy = (*json_content).clone();
+            let escaped_text = text_to_copy
+                .replace('\\', "\\\\")
+                .replace('`', "\\`")
+                .replace('$', "\\$")
+                .replace('\'', "\\'")
+                .replace('\n', "\\n")
+                .replace('\r', "\\r");
+            
+            // Mobile-friendly clipboard copying with fallback methods
+            let copy_script = format!(r#"
+                (async function() {{
+                    try {{
+                        // Modern Clipboard API (preferred)
+                        if (navigator.clipboard && navigator.clipboard.writeText) {{
+                            await navigator.clipboard.writeText(`{}`);
+                            console.log('JSON copied to clipboard!');
+                            return;
+                        }}
+                        
+                        // Fallback for older browsers/mobile
+                        const textArea = document.createElement('textarea');
+                        textArea.value = `{}`;
+                        textArea.style.position = 'fixed';
+                        textArea.style.left = '-9999px';
+                        textArea.style.top = '-9999px';
+                        document.body.appendChild(textArea);
+                        
+                        textArea.focus();
+                        textArea.select();
+                        textArea.setSelectionRange(0, 99999); // For mobile devices
+                        
+                        const successful = document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        
+                        if (successful) {{
+                            console.log('JSON copied to clipboard!');
+                        }} else {{
+                            throw new Error('Copy command failed');
+                        }}
+                    }} catch (err) {{
+                        console.error('Copy failed:', err);
+                        console.log('Copy failed. Please copy manually from the text above.');
+                    }}
+                }})();
+            "#, escaped_text, escaped_text);
+            
+            let _ = js_sys::eval(&copy_script);
+        })
+    };
+
+    // Save JSON to file
+    let save_json = Callback::from(|_| {
+        storage::download_json();
+    });
+
+    // Show import modal
+    let show_modal = {
+        let show_import_modal = show_import_modal.clone();
+        let import_json = import_json.clone();
+        Callback::from(move |_| {
+            import_json.set(String::new());
+            show_import_modal.set(true);
+        })
+    };
+
+    // Close import modal
+    let close_modal = {
+        let show_import_modal = show_import_modal.clone();
+        Callback::from(move |_| {
+            show_import_modal.set(false);
+        })
+    };
+
+    // Handle textarea change
+    let on_textarea_change = {
+        let import_json = import_json.clone();
+        Callback::from(move |e: Event| {
+            let input: HtmlTextAreaElement = e.target_unchecked_into();
+            import_json.set(input.value());
+        })
+    };
+
+    // Import JSON data
+    let import_data = {
+        let import_json = import_json.clone();
+        let json_content = json_content.clone();
+        let show_import_modal = show_import_modal.clone();
+        Callback::from(move |_| {
+            let json_str = (*import_json).clone();
+            if !json_str.is_empty() {
+                match storage::import_from_json(&json_str) {
+                    Ok(_) => {
+                        json_content.set(storage::export_to_json());
+                        show_import_modal.set(false);
+                        web_sys::console::log_1(&"Data imported successfully!".into());
+                    }
+                    Err(e) => {
+                        web_sys::console::log_1(&format!("Import failed: {}", e).into());
+                        // Show error to user
+                        if let Some(window) = window() {
+                            let _ = window.alert_with_message(&format!("Import failed: {}", e));
+                        }
+                    }
+                }
+            }
+        })
+    };
+
+    // Trigger file import
+    let trigger_file_import = {
+        let file_input_ref = file_input_ref.clone();
+        Callback::from(move |_| {
+            if let Some(input) = file_input_ref.cast::<HtmlInputElement>() {
+                input.click();
+            }
+        })
+    };
+
+    // Handle file selection
+    let on_file_change = {
+        let json_content = json_content.clone();
+        let show_import_modal = show_import_modal.clone();
+        Callback::from(move |e: Event| {
+            let input: HtmlInputElement = e.target_unchecked_into();
+            if let Some(files) = input.files() {
+                if let Some(file) = files.get(0) {
+                    let json_content = json_content.clone();
+                    let show_import_modal = show_import_modal.clone();
+                    
+                    let reader = web_sys::FileReader::new().unwrap();
+                    let reader_clone = reader.clone();
+                    
+                    let _ = reader.read_as_text(&file);
+                    
+                    let closure = Closure::once(move || {
+                        if let Ok(result) = reader_clone.result() {
+                            if let Some(text_str) = result.as_string() {
+                                match storage::import_from_json(&text_str) {
+                                    Ok(_) => {
+                                        json_content.set(storage::export_to_json());
+                                        show_import_modal.set(false);
+                                        web_sys::console::log_1(&"Data imported successfully from file!".into());
+                                    }
+                                    Err(e) => {
+                                        web_sys::console::log_1(&format!("Import failed: {}", e).into());
+                                        if let Some(window) = window() {
+                                            let _ = window.alert_with_message(&format!("Import failed: {}", e));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    
+                    reader.set_onloadend(Some(closure.as_ref().unchecked_ref()));
+                    closure.forget();
+                }
+            }
+            // Reset the file input value to allow re-selecting the same file
+            input.set_value("");
+        })
+    };
+
+    html! {
+        <>
+            <Navigation title="Relf" />
+            
+            <div class="data-page-container">
+                <div class="data-content">
+                    <div class="markdown-display">
+                        <div class="markdown-header">
+                            <div class="button-group">
+                                <button 
+                                    class="refresh-button modern-button icon-only" 
+                                    onclick={refresh_data}
+                                    title="Reset all data to defaults"
+                                >
+                                    <span class="button-icon">{"🔄"}</span>
+                                </button>
+                                <button 
+                                    class="copy-button modern-button icon-only" 
+                                    onclick={copy_json}
+                                    title="Copy data"
+                                >
+                                    <span class="button-icon">{"📋"}</span>
+                                </button>
+                                <button 
+                                    class="paste-button modern-button icon-only" 
+                                    onclick={show_modal}
+                                    title="Paste data"
+                                >
+                                    <span class="button-icon">{"📄"}</span>
+                                </button>
+                                <button 
+                                    class="save-button modern-button icon-only" 
+                                    onclick={save_json}
+                                    title="Save data to file"
+                                >
+                                    <span class="button-icon">{"💾"}</span>
+                                </button>
+                                <button 
+                                    class="import-button modern-button icon-only" 
+                                    onclick={trigger_file_import}
+                                    title="Import from file"
+                                >
+                                    <span class="button-icon">{"📁"}</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="markdown-content-wrapper">
+                            <pre id="json-content" class="markdown-block">{&*json_content}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            // Import Modal
+            if *show_import_modal {
+                <div class="modal-overlay" onclick={close_modal.clone()}>
+                    <div class="modal-content" onclick={|e: MouseEvent| e.stop_propagation()}>
+                        <form class="modal-form" onsubmit={Callback::from(|e: SubmitEvent| e.prevent_default())}>
+                            <label for="json-data">{"Data:"}</label>
+                            <textarea 
+                                ref={textarea_ref}
+                                id="json-data"
+                                placeholder="{\n  \"outside\": [...],\n  \"inside\": [...]\n}"
+                                value={(*import_json).clone()}
+                                onchange={on_textarea_change}
+                                rows="15"
+                            />
+                            
+                            <button type="button" id="submit-btn" onclick={import_data}>{"Import"}</button>
+                        </form>
+                    </div>
+                </div>
+            }
+            
+            <input 
+                type="file" 
+                ref={file_input_ref}
+                accept=".json"
+                style="display: none;"
+                onchange={on_file_change}
+            />
+        </>
+    }
+}
