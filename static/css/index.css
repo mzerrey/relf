@@ -4,11 +4,15 @@ body {
   color: black;
   margin: 0;
   height: 100vh;
-  display: flex;
-  align-items: center;
   overflow: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+
+body.homepage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 body::-webkit-scrollbar {

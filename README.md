@@ -1,10 +1,39 @@
 # Relf
 
-A personal data management application built with Rust and WebAssembly.
+A personal data management application built with Rust (Yew framework) and WebAssembly.
 
-## Demo Site
+## Live Demo
 
-🚀 **Live Demo**: https://relf-app.fly.dev
+https://relf-app.fly.dev
+
+## Usage
+
+### Daily Usage
+1. Use Relf as your daily data management tool
+2. At the end of each session, **don't forget to save your data**
+3. Export your data regularly for backup
+
+### LLM Workflow
+Relf supports JSON import/export for LLM workflows:
+
+#### Method 1: LLM → JSON → Relf
+1. Use LLM to generate structured data in JSON format
+2. Save the generated JSON file
+3. Import the JSON file into Relf
+
+#### Method 2: Relf → JSON → LLM
+1. Export your data from Relf as JSON
+2. Copy the JSON content
+3. Paste into LLM for analysis or processing
+4. Import the processed JSON back to Relf
+
+#### Data Options
+- **All data copy**: Copy all data to clipboard
+- **All data paste**: Paste all data from clipboard
+- **Inside only paste**: Paste data for inside content only
+- **Outside only paste**: Paste data for outside content only
+- **Export as file**: Export data as JSON file
+- **Import as file**: Import data from JSON file
 
 ## Quick Start
 
@@ -39,6 +68,7 @@ cargo run --release --bin server --features server
 
 - **Offline-First**: Browser local storage
 - **Responsive**: Desktop and mobile support
+
 
 ### Option 3: Docker Deployment
 
