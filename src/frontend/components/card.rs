@@ -10,7 +10,7 @@ pub struct CardProps {
 #[function_component(Card)]
 pub fn card(props: &CardProps) -> Html {
     html! {
-        <div class={classes!("card", props.class.clone())}>
+        <div class={props.class.clone()}>
             {props.children.clone()}
         </div>
     }

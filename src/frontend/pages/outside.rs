@@ -179,7 +179,7 @@ pub fn outside_page() -> Html {
                         });
                         
                         html! {
-                            <Card key={outside.uuid.clone()}>
+                            <Card key={outside.uuid.clone()} class="outside-card">
                                 <CardHeader>
                                     <h3>{&outside.name}</h3>
                                 </CardHeader>

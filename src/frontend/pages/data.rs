@@ -9,9 +9,15 @@ use crate::frontend::services::storage;
 pub fn data() -> Html {
     let json_content = use_state(|| storage::export_to_json());
     let show_import_modal = use_state(|| false);
+    let show_import_outside_modal = use_state(|| false);
+    let show_import_inside_modal = use_state(|| false);
     let import_json = use_state(|| String::new());
+    let import_outside_json = use_state(|| String::new());
+    let import_inside_json = use_state(|| String::new());
     let file_input_ref = use_node_ref();
     let textarea_ref = use_node_ref();
+    let outside_textarea_ref = use_node_ref();
+    let inside_textarea_ref = use_node_ref();
 
     // Refresh/Reset all data to defaults
     let refresh_data = {
@@ -99,11 +105,47 @@ pub fn data() -> Html {
         })
     };
 
+    // Show import outside modal
+    let show_outside_modal = {
+        let show_import_outside_modal = show_import_outside_modal.clone();
+        let import_outside_json = import_outside_json.clone();
+        Callback::from(move |_| {
+            import_outside_json.set(String::new());
+            show_import_outside_modal.set(true);
+        })
+    };
+
+    // Show import inside modal
+    let show_inside_modal = {
+        let show_import_inside_modal = show_import_inside_modal.clone();
+        let import_inside_json = import_inside_json.clone();
+        Callback::from(move |_| {
+            import_inside_json.set(String::new());
+            show_import_inside_modal.set(true);
+        })
+    };
+
     // Close import modal
     let close_modal = {
         let show_import_modal = show_import_modal.clone();
         Callback::from(move |_| {
             show_import_modal.set(false);
+        })
+    };
+
+    // Close import outside modal
+    let close_outside_modal = {
+        let show_import_outside_modal = show_import_outside_modal.clone();
+        Callback::from(move |_| {
+            show_import_outside_modal.set(false);
+        })
+    };
+
+    // Close import inside modal
+    let close_inside_modal = {
+        let show_import_inside_modal = show_import_inside_modal.clone();
+        Callback::from(move |_| {
+            show_import_inside_modal.set(false);
         })
     };
 
@@ -113,6 +155,24 @@ pub fn data() -> Html {
         Callback::from(move |e: Event| {
             let input: HtmlTextAreaElement = e.target_unchecked_into();
             import_json.set(input.value());
+        })
+    };
+
+    // Handle outside textarea change
+    let on_outside_textarea_change = {
+        let import_outside_json = import_outside_json.clone();
+        Callback::from(move |e: Event| {
+            let input: HtmlTextAreaElement = e.target_unchecked_into();
+            import_outside_json.set(input.value());
+        })
+    };
+
+    // Handle inside textarea change
+    let on_inside_textarea_change = {
+        let import_inside_json = import_inside_json.clone();
+        Callback::from(move |e: Event| {
+            let input: HtmlTextAreaElement = e.target_unchecked_into();
+            import_inside_json.set(input.value());
         })
     };
 
@@ -129,6 +189,58 @@ pub fn data() -> Html {
                         json_content.set(storage::export_to_json());
                         show_import_modal.set(false);
                         web_sys::console::log_1(&"Data imported successfully!".into());
+                    }
+                    Err(e) => {
+                        web_sys::console::log_1(&format!("Import failed: {}", e).into());
+                        // Show error to user
+                        if let Some(window) = window() {
+                            let _ = window.alert_with_message(&format!("Import failed: {}", e));
+                        }
+                    }
+                }
+            }
+        })
+    };
+
+    // Import outside JSON data
+    let import_outside_data = {
+        let import_outside_json = import_outside_json.clone();
+        let json_content = json_content.clone();
+        let show_import_outside_modal = show_import_outside_modal.clone();
+        Callback::from(move |_| {
+            let json_str = (*import_outside_json).clone();
+            if !json_str.is_empty() {
+                match storage::import_outside_from_json(&json_str) {
+                    Ok(_) => {
+                        json_content.set(storage::export_to_json());
+                        show_import_outside_modal.set(false);
+                        web_sys::console::log_1(&"Outside data imported successfully!".into());
+                    }
+                    Err(e) => {
+                        web_sys::console::log_1(&format!("Import failed: {}", e).into());
+                        // Show error to user
+                        if let Some(window) = window() {
+                            let _ = window.alert_with_message(&format!("Import failed: {}", e));
+                        }
+                    }
+                }
+            }
+        })
+    };
+
+    // Import inside JSON data
+    let import_inside_data = {
+        let import_inside_json = import_inside_json.clone();
+        let json_content = json_content.clone();
+        let show_import_inside_modal = show_import_inside_modal.clone();
+        Callback::from(move |_| {
+            let json_str = (*import_inside_json).clone();
+            if !json_str.is_empty() {
+                match storage::import_inside_from_json(&json_str) {
+                    Ok(_) => {
+                        json_content.set(storage::export_to_json());
+                        show_import_inside_modal.set(false);
+                        web_sys::console::log_1(&"Inside data imported successfully!".into());
                     }
                     Err(e) => {
                         web_sys::console::log_1(&format!("Import failed: {}", e).into());
@@ -228,6 +340,20 @@ pub fn data() -> Html {
                                     <span class="button-icon">{"📄"}</span>
                                 </button>
                                 <button 
+                                    class="paste-outside-button modern-button icon-only" 
+                                    onclick={show_outside_modal}
+                                    title="Paste outside data only"
+                                >
+                                    <span class="button-icon">{"📄"}</span>
+                                </button>
+                                <button 
+                                    class="paste-inside-button modern-button icon-only" 
+                                    onclick={show_inside_modal}
+                                    title="Paste inside data only"
+                                >
+                                    <span class="button-icon">{"📄"}</span>
+                                </button>
+                                <button 
                                     class="save-button modern-button icon-only" 
                                     onclick={save_json}
                                     title="Save data to file"
@@ -266,6 +392,48 @@ pub fn data() -> Html {
                             />
                             
                             <button type="button" id="submit-btn" onclick={import_data}>{"Import"}</button>
+                        </form>
+                    </div>
+                </div>
+            }
+            
+            // Import Outside Modal
+            if *show_import_outside_modal {
+                <div class="modal-overlay" onclick={close_outside_modal.clone()}>
+                    <div class="modal-content" onclick={|e: MouseEvent| e.stop_propagation()}>
+                        <form class="modal-form" onsubmit={Callback::from(|e: SubmitEvent| e.prevent_default())}>
+                            <label for="outside-json-data">{"Outside Data:"}</label>
+                            <textarea 
+                                ref={outside_textarea_ref}
+                                id="outside-json-data"
+                                placeholder="{\n  \"outside\": [...]\n}"
+                                value={(*import_outside_json).clone()}
+                                onchange={on_outside_textarea_change}
+                                rows="15"
+                            />
+                            
+                            <button type="button" id="submit-btn" onclick={import_outside_data}>{"Import Outside"}</button>
+                        </form>
+                    </div>
+                </div>
+            }
+            
+            // Import Inside Modal
+            if *show_import_inside_modal {
+                <div class="modal-overlay" onclick={close_inside_modal.clone()}>
+                    <div class="modal-content" onclick={|e: MouseEvent| e.stop_propagation()}>
+                        <form class="modal-form" onsubmit={Callback::from(|e: SubmitEvent| e.prevent_default())}>
+                            <label for="inside-json-data">{"Inside Data:"}</label>
+                            <textarea 
+                                ref={inside_textarea_ref}
+                                id="inside-json-data"
+                                placeholder="{\n  \"inside\": [...]\n}"
+                                value={(*import_inside_json).clone()}
+                                onchange={on_inside_textarea_change}
+                                rows="15"
+                            />
+                            
+                            <button type="button" id="submit-btn" onclick={import_inside_data}>{"Import Inside"}</button>
                         </form>
                     </div>
                 </div>

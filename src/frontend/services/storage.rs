@@ -21,6 +21,16 @@ pub struct ExportData {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct OutsideOnlyData {
+    pub outside: Vec<ExportOutside>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct InsideOnlyData {
+    pub inside: Vec<ExportInside>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ExportOutside {
     pub name: String,
     pub context: String,
@@ -218,6 +228,40 @@ pub fn reset_to_defaults() -> Result<(), String> {
     let default_data = StorageData::default();
     save_outsides(&default_data.outside)?;
     save_insides(&default_data.inside)?;
+    Ok(())
+}
+
+pub fn import_outside_from_json(json_str: &str) -> Result<(), String> {
+    let data: OutsideOnlyData = serde_json::from_str(json_str)
+        .map_err(|e| format!("Invalid JSON format: {:?}", e))?;
+    
+    // Convert only outside data with new UUIDs
+    let outsides: Vec<Outside> = data.outside.into_iter().map(|o| Outside {
+        uuid: uuid::Uuid::new_v4().to_string(),
+        name: o.name,
+        context: o.context,
+        url: o.url,
+        percentage: o.percentage,
+    }).collect();
+    
+    save_outsides(&outsides)?;
+    
+    Ok(())
+}
+
+pub fn import_inside_from_json(json_str: &str) -> Result<(), String> {
+    let data: InsideOnlyData = serde_json::from_str(json_str)
+        .map_err(|e| format!("Invalid JSON format: {:?}", e))?;
+    
+    // Convert only inside data with new UUIDs
+    let insides: Vec<Inside> = data.inside.into_iter().map(|i| Inside {
+        uuid: uuid::Uuid::new_v4().to_string(),
+        date: i.date,
+        context: i.context,
+    }).collect();
+    
+    save_insides(&insides)?;
+    
     Ok(())
 }
 

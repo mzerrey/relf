@@ -45,7 +45,6 @@ h1 {
 .data-content {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   margin-bottom: 60px;
   border: 1px solid #e1e5e9;
@@ -100,7 +99,6 @@ h1 {
 .modern-button:hover {
   background: #f8f9fc;
   border-color: #667eea;
-  transform: translateY(-2px);
 }
 
 .button-icon {
@@ -181,11 +179,10 @@ h1 {
   width: 55px;
   height: 55px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #667eea;
   color: white;
   font-size: 24px;
   border: none;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -199,8 +196,7 @@ h1 {
 }
 
 .back-to-top-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  background: #764ba2;
 }
 
 .modal-overlay {
@@ -226,7 +222,7 @@ h1 {
   width: auto;
   max-height: calc(100vh - 40px);
   overflow-y: auto;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ddd;
   margin: 0;
   box-sizing: border-box;
   display: flex;
@@ -292,7 +288,6 @@ h1 {
 .modal-button:hover {
   background: #666;
   border-color: #666;
-  transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
@@ -309,7 +304,6 @@ h1 {
   .data-content {
     border-radius: 8px;
     margin-bottom: 40px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
   }
   
   .markdown-header {

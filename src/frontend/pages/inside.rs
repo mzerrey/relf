@@ -132,7 +132,7 @@ pub fn inside_page() -> Html {
                         });
                         
                         html! {
-                            <Card key={inside.uuid.clone()}>
+                            <Card key={inside.uuid.clone()} class="inside-card">
                                 <CardContent>
                                     <p>{&inside.context}</p>
                                 </CardContent>
