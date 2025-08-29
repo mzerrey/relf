@@ -1,370 +1,374 @@
 body {
-  font-family: Arial, sans-serif; 
-  background-color: white; 
-  color: black;
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  overflow: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+    font-family: Arial, sans-serif;
+    background-color: white;
+    color: black;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 body::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 h1 {
-  color: #333;
-  margin-top: 20px;
-  text-align: center;
+    color: #333;
+    margin-top: 20px;
+    text-align: center;
 }
 
 /* Card Styles */
 .cards-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 80px 15px 100px 30px;
-  min-height: calc(100vh - 60px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  scroll-behavior: smooth;
-  align-content: start;
-  box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 15px 100px 30px;
+    min-height: calc(100vh - 60px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    align-content: start;
+    box-sizing: border-box;
 }
 
 .cards-container::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 .inside-card {
-  background-color: white;
-  border-radius: 8px;
-  border: 1px solid #eee;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  height: 220px;
-  margin-bottom: 0;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 220px;
+    margin-bottom: 0;
 }
 
 .card-header {
-  padding: 15px;
-  border-bottom: 1px solid #eee;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
 }
 
 .card-header h3 {
-  margin: 0;
-  font-size: 17px;
-  color: #666;
+    margin: 0;
+    font-size: 17px;
+    color: #666;
 }
 
-.card-content {
-  padding: 12px;
-  flex-grow: 1;
-  min-height: 80px;
-  max-height: 140px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  word-break: break-word;
-  hyphens: auto;
-  margin-bottom: 8px;
+.inside-card-content {
+    padding: 14px;
+    flex-grow: 1;
+    min-height: 80px;
+    max-height: 140px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    word-break: break-word;
+    hyphens: auto;
+    margin-bottom: 15px;
 }
 
-.card-content::-webkit-scrollbar {
-  display: none;
+.inside-card-content::-webkit-scrollbar {
+    display: none;
 }
 
-.card-content p {
-  margin: 0 0 8px 0;
-  color: #333;
-  line-height: 1.5;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: pre-wrap;
-  font-size: 14px;
+.inside-card-content p {
+    margin: 0 0 8px 0;
+    color: #333;
+    line-height: 1.5;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    font-size: 14px;
 }
 
 .card-footer {
-  padding: 10px 12px;
-  border-top: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 40px;
+    padding: 10px 12px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 40px;
 }
 
 .card-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .date {
-  color: #666;
-  font-size: 14px;
+    color: #666;
+    font-size: 14px;
 }
 
 .buttons {
-  display: flex;
-  gap: 10px;
+    display: flex;
+    gap: 10px;
 }
 
-.edit-btn, .delete-btn {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.3s;
-  width: auto;
-  background-color: #f0f0f0;
-  color: black;
+.edit-btn,
+.delete-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+    width: auto;
+    background-color: #f0f0f0;
+    color: black;
 }
 
 .edit-btn:hover {
-  background-color: black;
-  color: white;
+    background-color: black;
+    color: white;
 }
 
 .delete-btn:hover {
-  background-color: black;
-  color: white;
+    background-color: black;
+    color: white;
 }
 
 /* Floating Action Button */
 .fab {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: #f0f0f0;
-  color: black;
-  font-size: 28px;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background-color 0.3s;
-  z-index: 100;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    color: black;
+    font-size: 28px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s;
+    z-index: 100;
 }
 
 .fab:hover {
-  background-color: black;
-  color: white;
+    background-color: black;
+    color: white;
 }
 
 /* Modal Styles */
 .modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
-  cursor: pointer;
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
 }
 
 .modal.show {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .modal-content {
-  background-color: white;
-  margin: 0;
-  padding: 0;
-  border: none;
-  border-radius: 12px;
-  width: auto;
-  max-width: fit-content;
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  position: relative;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  box-sizing: border-box;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  cursor: default;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    width: auto;
+    max-width: fit-content;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .modal-content::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
-
 
 .modal-content h2 {
-  margin: 0 0 20px 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: #111;
-  text-align: center;
+    margin: 0 0 20px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #111;
+    text-align: center;
 }
 
-#submit-btn, .modal button[type="button"] {
-  background-color: white;
-  color: #333;
-  padding: 12px 30px;
-  border: 2px solid #333;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  width: 100%;
-  margin-top: 15px;
-  transition: all 0.3s;
+#submit-btn,
+.modal button[type="button"] {
+    background-color: white;
+    color: #333;
+    padding: 12px 30px;
+    border: 2px solid #333;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+    margin-top: 15px;
+    transition: all 0.3s;
 }
 
-#submit-btn:hover, .modal button[type="button"]:hover {
-  background-color: #333;
-  color: white;
-  transform: translateY(-2px);
+#submit-btn:hover,
+.modal button[type="button"]:hover {
+    background-color: #333;
+    color: white;
+    transform: translateY(-2px);
 }
 
 #inside-form {
-  margin: 20px auto 0 auto;
-  text-align: left;
-  width: 100%;
-  max-width: 100%;
-  overflow-y: auto;
-  max-height: 70vh;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  scroll-behavior: smooth;
-  box-sizing: border-box;
+    margin: 20px auto 0 auto;
+    text-align: left;
+    width: 100%;
+    max-width: 100%;
+    overflow-y: auto;
+    max-height: 70vh;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    box-sizing: border-box;
 }
 
 #inside-form::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 form label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: #333;
-  font-size: 14px;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
 }
 
 form textarea {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  margin-right: 0;
-  border: none;
-  border-radius: 8px;
-  box-sizing: border-box;
-  background-color: #f8f8f8;
-  font-size: 14px;
-  transition: background-color 0.3s;
-  min-height: 200px;
-  max-height: 400px;
-  resize: vertical;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    margin-right: 0;
+    border: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    background-color: #f8f8f8;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    min-height: 200px;
+    max-height: 400px;
+    resize: vertical;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 form textarea:focus {
-  outline: none;
-  background-color: #f0f0f0;
+    outline: none;
+    background-color: #f0f0f0;
 }
 
 /* Remove shadows from modal form elements */
 .modal-form {
-  box-shadow: none;
+    box-shadow: none;
 }
 
 .modal-form textarea {
-  box-shadow: none;
+    box-shadow: none;
 }
 
 #submit-btn {
-  width: 100%;
-  padding: 14px;
-  background-color: black;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  margin-top: 10px;
-  transition: all 0.3s;
+    width: 100%;
+    padding: 14px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 10px;
+    transition: all 0.3s;
 }
 
 #submit-btn:hover {
-  background-color: #333;
-  transform: translateY(-2px);
+    background-color: #333;
+    transform: translateY(-2px);
 }
 
 /* Back to top button */
 #back-to-top {
-  position: fixed;
-  bottom: -60px;
-  right: 30px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: #333;
-  color: white;
-  font-size: 20px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: bottom 0.3s, background-color 0.3s;
-  z-index: 99;
+    position: fixed;
+    bottom: -60px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #333;
+    color: white;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition:
+        bottom 0.3s,
+        background-color 0.3s;
+    z-index: 99;
 }
 
 #back-to-top.visible {
-  bottom: 100px;
+    bottom: 100px;
 }
 
 #back-to-top:hover {
-  background-color: #555;
+    background-color: #555;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  .cards-container {
-    grid-template-columns: 1fr;
-    padding: 70px 15px 20px 20px; /* Add more right padding for mobile */
-  }
-  
-  .inside-card {
-    margin-bottom: 15px;
-  }
-  
-  .modal-content {
-    width: 95%;
-    padding: 20px;
-    margin: 0 auto;
-  }
-  
-  #back-to-top.visible {
-    bottom: 100px;
-  }
+    .cards-container {
+        grid-template-columns: 1fr;
+        padding: 70px 15px 20px 20px; /* Add more right padding for mobile */
+    }
+
+    .inside-card {
+        margin-bottom: 15px;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+        margin: 0 auto;
+    }
+
+    #back-to-top.visible {
+        bottom: 100px;
+    }
 }

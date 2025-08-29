@@ -183,7 +183,7 @@ pub fn outside_page() -> Html {
                                 <CardHeader>
                                     <h3>{&outside.name}</h3>
                                 </CardHeader>
-                                <CardContent>
+                                <CardContent class="outside-card-content">
                                     <p>{&outside.context}</p>
                                 </CardContent>
                                 <CardFooter>

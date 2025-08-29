@@ -33,12 +33,20 @@ pub fn card_header(props: &CardHeaderProps) -> Html {
 #[derive(Properties, PartialEq)]
 pub struct CardContentProps {
     pub children: Children,
+    #[prop_or_default]
+    pub class: String,
 }
 
 #[function_component(CardContent)]
 pub fn card_content(props: &CardContentProps) -> Html {
+    let class = if props.class.is_empty() {
+        "card-content".to_string()
+    } else {
+        props.class.clone()
+    };
+    
     html! {
-        <div class="card-content">
+        <div class={class}>
             {props.children.clone()}
         </div>
     }
