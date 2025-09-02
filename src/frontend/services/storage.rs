@@ -138,8 +138,14 @@ pub fn delete_inside(uuid: &str) -> Result<(), String> {
 }
 
 pub fn export_to_json() -> String {
-    let outsides = get_outsides();
-    let insides = get_insides();
+    let mut outsides = get_outsides();
+    let mut insides = get_insides();
+    
+    // Sort outside by percentage (highest first)
+    outsides.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+    
+    // Sort inside by date (newest first)
+    insides.sort_by(|a, b| b.date.cmp(&a.date));
     
     let export_outsides: Vec<ExportOutside> = outsides.into_iter().map(|o| ExportOutside {
         name: o.name,

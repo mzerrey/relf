@@ -7,6 +7,16 @@ use crate::frontend::services::storage;
 
 #[function_component(Data)]
 pub fn data() -> Html {
+    let outsides = use_state(|| {
+        let mut data = storage::get_outsides();
+        data.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+        data
+    });
+    let insides = use_state(|| {
+        let mut data = storage::get_insides();
+        data.sort_by(|a, b| b.date.cmp(&a.date));
+        data
+    });
     let json_content = use_state(|| storage::export_to_json());
     let show_import_modal = use_state(|| false);
     let show_import_outside_modal = use_state(|| false);
@@ -21,10 +31,20 @@ pub fn data() -> Html {
 
     // Refresh/Reset all data to defaults
     let refresh_data = {
+        let outsides = outsides.clone();
+        let insides = insides.clone();
         let json_content = json_content.clone();
         Callback::from(move |_: MouseEvent| {
             match storage::reset_to_defaults() {
                 Ok(_) => {
+                    let mut outside_data = storage::get_outsides();
+                    outside_data.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+                    outsides.set(outside_data);
+                    
+                    let mut inside_data = storage::get_insides();
+                    inside_data.sort_by(|a, b| b.date.cmp(&a.date));
+                    insides.set(inside_data);
+                    
                     json_content.set(storage::export_to_json());
                     web_sys::console::log_1(&"All data reset to defaults!".into());
                 }
@@ -35,7 +55,7 @@ pub fn data() -> Html {
         })
     };
 
-    // Copy JSON data to clipboard
+    // Copy all JSON data to clipboard
     let copy_json = {
         let json_content = json_content.clone();
         Callback::from(move |_| {
@@ -179,6 +199,8 @@ pub fn data() -> Html {
     // Import JSON data
     let import_data = {
         let import_json = import_json.clone();
+        let outsides = outsides.clone();
+        let insides = insides.clone();
         let json_content = json_content.clone();
         let show_import_modal = show_import_modal.clone();
         Callback::from(move |_| {
@@ -186,6 +208,14 @@ pub fn data() -> Html {
             if !json_str.is_empty() {
                 match storage::import_from_json(&json_str) {
                     Ok(_) => {
+                        let mut outside_data = storage::get_outsides();
+                        outside_data.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+                        outsides.set(outside_data);
+                        
+                        let mut inside_data = storage::get_insides();
+                        inside_data.sort_by(|a, b| b.date.cmp(&a.date));
+                        insides.set(inside_data);
+                        
                         json_content.set(storage::export_to_json());
                         show_import_modal.set(false);
                         web_sys::console::log_1(&"Data imported successfully!".into());
@@ -205,6 +235,7 @@ pub fn data() -> Html {
     // Import outside JSON data
     let import_outside_data = {
         let import_outside_json = import_outside_json.clone();
+        let outsides = outsides.clone();
         let json_content = json_content.clone();
         let show_import_outside_modal = show_import_outside_modal.clone();
         Callback::from(move |_| {
@@ -212,6 +243,10 @@ pub fn data() -> Html {
             if !json_str.is_empty() {
                 match storage::import_outside_from_json(&json_str) {
                     Ok(_) => {
+                        let mut outside_data = storage::get_outsides();
+                        outside_data.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+                        outsides.set(outside_data);
+                        
                         json_content.set(storage::export_to_json());
                         show_import_outside_modal.set(false);
                         web_sys::console::log_1(&"Outside data imported successfully!".into());
@@ -231,6 +266,7 @@ pub fn data() -> Html {
     // Import inside JSON data
     let import_inside_data = {
         let import_inside_json = import_inside_json.clone();
+        let insides = insides.clone();
         let json_content = json_content.clone();
         let show_import_inside_modal = show_import_inside_modal.clone();
         Callback::from(move |_| {
@@ -238,6 +274,10 @@ pub fn data() -> Html {
             if !json_str.is_empty() {
                 match storage::import_inside_from_json(&json_str) {
                     Ok(_) => {
+                        let mut inside_data = storage::get_insides();
+                        inside_data.sort_by(|a, b| b.date.cmp(&a.date));
+                        insides.set(inside_data);
+                        
                         json_content.set(storage::export_to_json());
                         show_import_inside_modal.set(false);
                         web_sys::console::log_1(&"Inside data imported successfully!".into());
@@ -266,12 +306,16 @@ pub fn data() -> Html {
 
     // Handle file selection
     let on_file_change = {
+        let outsides = outsides.clone();
+        let insides = insides.clone();
         let json_content = json_content.clone();
         let show_import_modal = show_import_modal.clone();
         Callback::from(move |e: Event| {
             let input: HtmlInputElement = e.target_unchecked_into();
             if let Some(files) = input.files() {
                 if let Some(file) = files.get(0) {
+                    let outsides = outsides.clone();
+                    let insides = insides.clone();
                     let json_content = json_content.clone();
                     let show_import_modal = show_import_modal.clone();
                     
@@ -285,6 +329,14 @@ pub fn data() -> Html {
                             if let Some(text_str) = result.as_string() {
                                 match storage::import_from_json(&text_str) {
                                     Ok(_) => {
+                                        let mut outside_data = storage::get_outsides();
+                                        outside_data.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+                                        outsides.set(outside_data);
+                                        
+                                        let mut inside_data = storage::get_insides();
+                                        inside_data.sort_by(|a, b| b.date.cmp(&a.date));
+                                        insides.set(inside_data);
+                                        
                                         json_content.set(storage::export_to_json());
                                         show_import_modal.set(false);
                                         web_sys::console::log_1(&"Data imported successfully from file!".into());
