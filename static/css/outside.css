@@ -25,7 +25,6 @@ h1 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  width: 90%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 80px 15px 100px 30px;
@@ -50,7 +49,7 @@ h1 {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 240px;
+  height: 280px;
   margin-bottom: 0;
 }
 
@@ -70,7 +69,7 @@ h1 {
   padding: 14px;
   flex-grow: 1;
   min-height: 80px;
-  max-height: 120px;
+  max-height: 160px;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none;

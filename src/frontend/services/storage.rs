@@ -271,3 +271,77 @@ pub fn import_inside_from_json(json_str: &str) -> Result<(), String> {
     Ok(())
 }
 
+pub fn append_from_json(json_str: &str) -> Result<(), String> {
+    let data: ExportData = serde_json::from_str(json_str)
+        .map_err(|e| format!("Invalid JSON format: {:?}", e))?;
+    
+    // Get existing data
+    let mut existing_outsides = get_outsides();
+    let mut existing_insides = get_insides();
+    
+    // Convert and append new data with new UUIDs
+    let new_outsides: Vec<Outside> = data.outside.into_iter().map(|o| Outside {
+        uuid: uuid::Uuid::new_v4().to_string(),
+        name: o.name,
+        context: o.context,
+        url: o.url,
+        percentage: o.percentage,
+    }).collect();
+    
+    let new_insides: Vec<Inside> = data.inside.into_iter().map(|i| Inside {
+        uuid: uuid::Uuid::new_v4().to_string(),
+        date: i.date,
+        context: i.context,
+    }).collect();
+    
+    existing_outsides.extend(new_outsides);
+    existing_insides.extend(new_insides);
+    
+    save_outsides(&existing_outsides)?;
+    save_insides(&existing_insides)?;
+    
+    Ok(())
+}
+
+pub fn append_outside_from_json(json_str: &str) -> Result<(), String> {
+    let data: OutsideOnlyData = serde_json::from_str(json_str)
+        .map_err(|e| format!("Invalid JSON format: {:?}", e))?;
+    
+    // Get existing data
+    let mut existing_outsides = get_outsides();
+    
+    // Convert and append new data with new UUIDs
+    let new_outsides: Vec<Outside> = data.outside.into_iter().map(|o| Outside {
+        uuid: uuid::Uuid::new_v4().to_string(),
+        name: o.name,
+        context: o.context,
+        url: o.url,
+        percentage: o.percentage,
+    }).collect();
+    
+    existing_outsides.extend(new_outsides);
+    save_outsides(&existing_outsides)?;
+    
+    Ok(())
+}
+
+pub fn append_inside_from_json(json_str: &str) -> Result<(), String> {
+    let data: InsideOnlyData = serde_json::from_str(json_str)
+        .map_err(|e| format!("Invalid JSON format: {:?}", e))?;
+    
+    // Get existing data
+    let mut existing_insides = get_insides();
+    
+    // Convert and append new data with new UUIDs
+    let new_insides: Vec<Inside> = data.inside.into_iter().map(|i| Inside {
+        uuid: uuid::Uuid::new_v4().to_string(),
+        date: i.date,
+        context: i.context,
+    }).collect();
+    
+    existing_insides.extend(new_insides);
+    save_insides(&existing_insides)?;
+    
+    Ok(())
+}
+

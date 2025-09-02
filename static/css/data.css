@@ -290,6 +290,47 @@ h1 {
   border-color: #666;
 }
 
+.button-row {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+  align-items: stretch;
+}
+
+.button-row button {
+  flex: 1;
+  width: 50%;
+}
+
+#submit-btn, #append-btn {
+  padding: 12px 30px;
+  border-radius: 8px;
+  border: 2px solid #333;
+  background: black;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  width: 100%;
+  height: 48px;
+  box-sizing: border-box;
+  line-height: 1;
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  margin-top: 0;
+}
+
+#submit-btn:hover, #append-btn:hover {
+  background: #333;
+  color: white;
+  transform: translateY(-2px);
+}
+
 @media (max-width: 768px) {
   .data-page-container {
     padding: 70px 10px 10px 20px;

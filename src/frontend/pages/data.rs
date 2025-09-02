@@ -196,6 +196,42 @@ pub fn data() -> Html {
         })
     };
 
+    // Append JSON data
+    let append_data = {
+        let import_json = import_json.clone();
+        let outsides = outsides.clone();
+        let insides = insides.clone();
+        let json_content = json_content.clone();
+        let show_import_modal = show_import_modal.clone();
+        Callback::from(move |_| {
+            let json_str = (*import_json).clone();
+            if !json_str.is_empty() {
+                match storage::append_from_json(&json_str) {
+                    Ok(_) => {
+                        let mut outside_data = storage::get_outsides();
+                        outside_data.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+                        outsides.set(outside_data);
+                        
+                        let mut inside_data = storage::get_insides();
+                        inside_data.sort_by(|a, b| b.date.cmp(&a.date));
+                        insides.set(inside_data);
+                        
+                        json_content.set(storage::export_to_json());
+                        show_import_modal.set(false);
+                        web_sys::console::log_1(&"Data appended successfully!".into());
+                    }
+                    Err(e) => {
+                        web_sys::console::log_1(&format!("Append failed: {}", e).into());
+                        // Show error to user
+                        if let Some(window) = window() {
+                            let _ = window.alert_with_message(&format!("Append failed: {}", e));
+                        }
+                    }
+                }
+            }
+        })
+    };
+
     // Import JSON data
     let import_data = {
         let import_json = import_json.clone();
@@ -232,6 +268,37 @@ pub fn data() -> Html {
         })
     };
 
+    // Append outside JSON data
+    let append_outside_data = {
+        let import_outside_json = import_outside_json.clone();
+        let outsides = outsides.clone();
+        let json_content = json_content.clone();
+        let show_import_outside_modal = show_import_outside_modal.clone();
+        Callback::from(move |_| {
+            let json_str = (*import_outside_json).clone();
+            if !json_str.is_empty() {
+                match storage::append_outside_from_json(&json_str) {
+                    Ok(_) => {
+                        let mut outside_data = storage::get_outsides();
+                        outside_data.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+                        outsides.set(outside_data);
+                        
+                        json_content.set(storage::export_to_json());
+                        show_import_outside_modal.set(false);
+                        web_sys::console::log_1(&"Outside data appended successfully!".into());
+                    }
+                    Err(e) => {
+                        web_sys::console::log_1(&format!("Append failed: {}", e).into());
+                        // Show error to user
+                        if let Some(window) = window() {
+                            let _ = window.alert_with_message(&format!("Append failed: {}", e));
+                        }
+                    }
+                }
+            }
+        })
+    };
+
     // Import outside JSON data
     let import_outside_data = {
         let import_outside_json = import_outside_json.clone();
@@ -256,6 +323,37 @@ pub fn data() -> Html {
                         // Show error to user
                         if let Some(window) = window() {
                             let _ = window.alert_with_message(&format!("Import failed: {}", e));
+                        }
+                    }
+                }
+            }
+        })
+    };
+
+    // Append inside JSON data
+    let append_inside_data = {
+        let import_inside_json = import_inside_json.clone();
+        let insides = insides.clone();
+        let json_content = json_content.clone();
+        let show_import_inside_modal = show_import_inside_modal.clone();
+        Callback::from(move |_| {
+            let json_str = (*import_inside_json).clone();
+            if !json_str.is_empty() {
+                match storage::append_inside_from_json(&json_str) {
+                    Ok(_) => {
+                        let mut inside_data = storage::get_insides();
+                        inside_data.sort_by(|a, b| b.date.cmp(&a.date));
+                        insides.set(inside_data);
+                        
+                        json_content.set(storage::export_to_json());
+                        show_import_inside_modal.set(false);
+                        web_sys::console::log_1(&"Inside data appended successfully!".into());
+                    }
+                    Err(e) => {
+                        web_sys::console::log_1(&format!("Append failed: {}", e).into());
+                        // Show error to user
+                        if let Some(window) = window() {
+                            let _ = window.alert_with_message(&format!("Append failed: {}", e));
                         }
                     }
                 }
@@ -443,7 +541,10 @@ pub fn data() -> Html {
                                 rows="15"
                             />
                             
-                            <button type="button" id="submit-btn" onclick={import_data}>{"Import"}</button>
+                            <div class="button-row">
+                                <button type="button" id="submit-btn" onclick={import_data}>{"Import"}</button>
+                                <button type="button" id="append-btn" onclick={append_data}>{"Append"}</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -464,7 +565,10 @@ pub fn data() -> Html {
                                 rows="15"
                             />
                             
-                            <button type="button" id="submit-btn" onclick={import_outside_data}>{"Import Outside"}</button>
+                            <div class="button-row">
+                                <button type="button" id="submit-btn" onclick={import_outside_data}>{"Import"}</button>
+                                <button type="button" id="append-btn" onclick={append_outside_data}>{"Append"}</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -485,7 +589,10 @@ pub fn data() -> Html {
                                 rows="15"
                             />
                             
-                            <button type="button" id="submit-btn" onclick={import_inside_data}>{"Import Inside"}</button>
+                            <div class="button-row">
+                                <button type="button" id="submit-btn" onclick={import_inside_data}>{"Import"}</button>
+                                <button type="button" id="append-btn" onclick={append_inside_data}>{"Append"}</button>
+                            </div>
                         </form>
                     </div>
                 </div>
