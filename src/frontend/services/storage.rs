@@ -124,7 +124,12 @@ pub fn add_inside(inside: Inside) -> Result<(), String> {
 pub fn update_inside(uuid: &str, updated: Inside) -> Result<(), String> {
     let mut insides = get_insides();
     if let Some(index) = insides.iter().position(|i| i.uuid == uuid) {
-        insides[index] = updated;
+        // Preserve the original date when updating
+        let original_date = insides[index].date.clone();
+        insides[index] = Inside {
+            date: original_date,
+            ..updated
+        };
         save_insides(&insides)
     } else {
         Err("Inside item not found".to_string())

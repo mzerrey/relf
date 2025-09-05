@@ -74,15 +74,26 @@ pub fn inside_page() -> Html {
             let context = (*context_input).clone();
             let uuid = (*edit_uuid).clone();
             
-            let inside = Inside {
-                uuid: uuid.clone().unwrap_or_else(|| uuid::Uuid::new_v4().to_string()),
-                context,
-                date: chrono::Local::now().format("%Y-%m-%d %H:%M:%S").to_string(),
-            };
-
             let result = if let Some(ref uuid) = uuid {
+                // Update: preserve existing date (handled in storage.rs, but explicitly use existing date)
+                let existing_item = insides.iter().find(|i| i.uuid == *uuid);
+                let date = existing_item
+                    .map(|i| i.date.clone())
+                    .unwrap_or_else(|| String::new());
+                
+                let inside = Inside {
+                    uuid: uuid.clone(),
+                    context,
+                    date,
+                };
                 storage::update_inside(uuid, inside)
             } else {
+                // Create new: set current timestamp
+                let inside = Inside {
+                    uuid: uuid::Uuid::new_v4().to_string(),
+                    context,
+                    date: chrono::Local::now().format("%Y-%m-%d %H:%M:%S").to_string(),
+                };
                 storage::add_inside(inside)
             };
 
