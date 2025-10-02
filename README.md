@@ -39,6 +39,8 @@ Internal notes or thoughts with timestamps:
 }
 ```
 
+> This format is also available in [github.com/rlelf/revw](https://github.com/rlelf/revw)
+
 ## Usage
 
 ### Daily Usage
