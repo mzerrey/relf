@@ -1,6 +1,6 @@
 # Relf
 
-A personal data management application built with Rust (Yew framework) and WebAssembly.
+A personal data management application built with Rust and WebAssembly.
 
 ## Live Demo
 
