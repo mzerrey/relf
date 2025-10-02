@@ -77,7 +77,7 @@ Relf supports JSON import/export for LLM workflows:
 - Rust (latest stable version)
 - Trunk: `cargo install trunk`
 
-### Option 1: Local Development with Trunk (Recommended)
+### Option 1: Local Development with Trunk
 ```bash
 # Install Trunk if not already installed
 cargo install trunk
@@ -98,12 +98,6 @@ cargo run --release --bin server --features server
 
 # Access at http://localhost:5000
 ```
-
-## Features
-
-- **Offline-First**: Browser local storage
-- **Responsive**: Desktop and mobile support
-
 
 ### Option 3: Docker Deployment
 
