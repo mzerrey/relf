@@ -6,6 +6,39 @@ A personal data management application built with Rust (Yew framework) and WebAs
 
 https://relf-app.fly.dev
 
+## Relf Format
+
+### Outside
+External resources and references:
+- **Name**: Title or identifier of the resource
+- **Context**: Description or notes about the resource
+- **URL**: Web address or link
+- **Percentage**: Score or progress indicator, sortable for ordering
+
+### Inside
+Internal notes or thoughts with timestamps:
+- **Date**: Timestamp of the entry, sortable for ordering
+- **Context**: notes or thoughts
+
+```json
+{
+  "outside": [
+    {
+      "name": "Rust Programming Language",
+      "context": "A systems programming language focused on safety, speed, and concurrency.",
+      "url": "https://www.rust-lang.org/",
+      "percentage": 90
+    }
+  ],
+  "inside": [
+    {
+      "date": "2024-01-01 10:00:00",
+      "context": "Finally learned how to use cargo! Running 'cargo new my_project' creates such a clean project structure."
+    }
+  ]
+}
+```
+
 ## Usage
 
 ### Daily Usage
