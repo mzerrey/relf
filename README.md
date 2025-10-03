@@ -27,12 +27,12 @@ Internal notes or thoughts with timestamps:
       "name": "Rust Programming Language",
       "context": "A systems programming language focused on safety, speed, and concurrency.",
       "url": "https://www.rust-lang.org/",
-      "percentage": 90
+      "percentage": 100
     }
   ],
   "inside": [
     {
-      "date": "2024-01-01 10:00:00",
+      "date": "2025-01-01 00:00:00",
       "context": "Finally learned how to use cargo! Running 'cargo new my_project' creates such a clean project structure."
     }
   ]

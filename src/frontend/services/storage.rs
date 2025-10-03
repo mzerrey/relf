@@ -53,14 +53,14 @@ impl Default for StorageData {
                     name: "Rust Programming Language".to_string(),
                     context: "A systems programming language focused on safety, speed, and concurrency. Rust prevents common bugs like null pointer dereferences and buffer overflows through its ownership system, making it ideal for building reliable software without sacrificing performance.".to_string(),
                     url: "https://www.rust-lang.org/".to_string(),
-                    percentage: 90,
+                    percentage: 100,
                 },
             ],
             inside: vec![
                 Inside {
                     uuid: uuid::Uuid::new_v4().to_string(),
                     context: "Finally learned how to use cargo! Running 'cargo new my_project' creates such a clean project structure. I love how it automatically sets up the Cargo.toml and src/main.rs. The fact that it initializes a git repo by default is really thoughtful. This feels so much more organized than other languages I've tried.".to_string(),
-                    date: "2024-01-01 10:00:00".to_string(),
+                    date: "2025-01-01 00:00:00".to_string(),
                 },
             ],
         }
