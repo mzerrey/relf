@@ -1,6 +1,6 @@
 # Relf
 
-A personal data management application built with Rust and WebAssembly.
+A web application for managing notes and resources built with Rust and WebAssembly.
 
 ## Live Demo
 
@@ -39,7 +39,7 @@ Internal notes or thoughts with timestamps:
 }
 ```
 
-This format is also available in [github.com/rlelf/revw](https://github.com/rlelf/revw)
+This format is also available in [revw](https://github.com/rlelf/revw)
 
 ## Usage
 
@@ -48,15 +48,21 @@ This format is also available in [github.com/rlelf/revw](https://github.com/rlel
 2. At the end of each session, **don't forget to save your data**
 3. Export your data regularly for backup
 
-### LLM Workflow
+### Notes and Resources Management
+Track learning resources, books, articles, and tools you're exploring.
+
+### Learning Diary
+Document your daily learning progress with timestamped notes.
+
+### LLM-Assisted Workflows
 Relf supports JSON import/export for LLM workflows:
 
-#### Method 1: LLM → JSON → Relf
+#### Workflow 1: LLM generates → You review
 1. Use LLM to generate structured data in JSON format
 2. Save the generated JSON file
 3. Import the JSON file into Relf
 
-#### Method 2: Relf → JSON → LLM
+#### Workflow 2: You create → LLM assists
 1. Export your data from Relf as JSON
 2. Copy the JSON content
 3. Paste into LLM for analysis or processing
