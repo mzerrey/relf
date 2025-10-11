@@ -6,7 +6,7 @@ pub struct Outside {
     pub name: String,
     pub context: String,
     pub url: String,
-    pub percentage: i32,
+    pub percentage: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

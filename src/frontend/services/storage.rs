@@ -35,7 +35,7 @@ pub struct ExportOutside {
     pub name: String,
     pub context: String,
     pub url: String,
-    pub percentage: i32,
+    pub percentage: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -53,7 +53,7 @@ impl Default for StorageData {
                     name: "Rust Programming Language".to_string(),
                     context: "A systems programming language focused on safety, speed, and concurrency. Rust prevents common bugs like null pointer dereferences and buffer overflows through its ownership system, making it ideal for building reliable software without sacrificing performance.".to_string(),
                     url: "https://www.rust-lang.org/".to_string(),
-                    percentage: 100,
+                    percentage: Some(100),
                 },
             ],
             inside: vec![
@@ -146,8 +146,22 @@ pub fn export_to_json() -> String {
     let mut outsides = get_outsides();
     let mut insides = get_insides();
     
-    // Sort outside by percentage (highest first)
-    outsides.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+    // Sort outside by percentage (highest first, nulls last), then by name
+    outsides.sort_by(|a, b| {
+        match (a.percentage, b.percentage) {
+            (Some(ap), Some(bp)) => {
+                let cmp = bp.cmp(&ap); // Descending order for percentage
+                if cmp == std::cmp::Ordering::Equal {
+                    a.name.cmp(&b.name) // Ascending order for name
+                } else {
+                    cmp
+                }
+            }
+            (Some(_), None) => std::cmp::Ordering::Less, // Non-null comes first
+            (None, Some(_)) => std::cmp::Ordering::Greater, // Null comes last
+            (None, None) => a.name.cmp(&b.name), // Ascending order for name
+        }
+    });
     
     // Sort inside by date (newest first)
     insides.sort_by(|a, b| b.date.cmp(&a.date));

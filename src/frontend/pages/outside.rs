@@ -9,7 +9,21 @@ use crate::frontend::services::storage;
 pub fn outside_page() -> Html {
     let outsides = use_state(|| {
         let mut data = storage::get_outsides();
-        data.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+        data.sort_by(|a, b| {
+            match (a.percentage, b.percentage) {
+                (Some(ap), Some(bp)) => {
+                    let cmp = bp.cmp(&ap); // Descending order for percentage
+                    if cmp == std::cmp::Ordering::Equal {
+                        a.name.cmp(&b.name) // Ascending order for name
+                    } else {
+                        cmp
+                    }
+                }
+                (Some(_), None) => std::cmp::Ordering::Less, // Non-null comes first
+                (None, Some(_)) => std::cmp::Ordering::Greater, // Null comes last
+                (None, None) => a.name.cmp(&b.name), // Ascending order for name
+            }
+        });
         data
     });
     let show_modal = use_state(|| false);
@@ -17,13 +31,27 @@ pub fn outside_page() -> Html {
     let name_input = use_state(|| String::new());
     let context_input = use_state(|| String::new());
     let url_input = use_state(|| String::new());
-    let percentage_input = use_state(|| 0);
+    let percentage_input = use_state(|| String::new());
 
     let _refresh_data = {
         let outsides = outsides.clone();
         Callback::from(move |_: MouseEvent| {
             let mut outsides_data = storage::get_outsides();
-            outsides_data.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+            outsides_data.sort_by(|a, b| {
+                match (a.percentage, b.percentage) {
+                    (Some(ap), Some(bp)) => {
+                        let cmp = bp.cmp(&ap); // Descending order for percentage
+                        if cmp == std::cmp::Ordering::Equal {
+                            a.name.cmp(&b.name) // Ascending order for name
+                        } else {
+                            cmp
+                        }
+                    }
+                    (Some(_), None) => std::cmp::Ordering::Less, // Non-null comes first
+                    (None, Some(_)) => std::cmp::Ordering::Greater, // Null comes last
+                    (None, None) => a.name.cmp(&b.name), // Ascending order for name
+                }
+            });
             outsides.set(outsides_data);
         })
     };
@@ -40,7 +68,7 @@ pub fn outside_page() -> Html {
             name_input.set(String::new());
             context_input.set(String::new());
             url_input.set(String::new());
-            percentage_input.set(0);
+            percentage_input.set(String::new());
             show_modal.set(true);
         })
     };
@@ -58,7 +86,7 @@ pub fn outside_page() -> Html {
                 name_input.set(outside.name.clone());
                 context_input.set(outside.context.clone());
                 url_input.set(outside.url.clone());
-                percentage_input.set(outside.percentage);
+                percentage_input.set(outside.percentage.map(|p| p.to_string()).unwrap_or_default());
                 edit_uuid.set(Some(uuid));
                 show_modal.set(true);
             }
@@ -100,7 +128,11 @@ pub fn outside_page() -> Html {
         let percentage_input = percentage_input.clone();
         Callback::from(move |e: InputEvent| {
             let input: web_sys::HtmlInputElement = e.target_unchecked_into();
-            percentage_input.set(input.value().parse().unwrap_or(0));
+            let value = input.value();
+            // Allow empty string or valid numbers only
+            if value.is_empty() || value.chars().all(|c| c.is_ascii_digit()) {
+                percentage_input.set(value);
+            }
         })
     };
 
@@ -116,9 +148,13 @@ pub fn outside_page() -> Html {
             let name = (*name_input).clone();
             let context = (*context_input).clone();
             let url = (*url_input).clone();
-            let percentage = *percentage_input;
+            let percentage = if (*percentage_input).is_empty() {
+                None
+            } else {
+                (*percentage_input).parse::<i32>().ok()
+            };
             let uuid = (*edit_uuid).clone();
-            
+
             let outside = Outside {
                 uuid: uuid.clone().unwrap_or_else(|| uuid::Uuid::new_v4().to_string()),
                 name,
@@ -136,7 +172,21 @@ pub fn outside_page() -> Html {
             match result {
                 Ok(_) => {
                     let mut outsides_data = storage::get_outsides();
-                    outsides_data.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+                    outsides_data.sort_by(|a, b| {
+                        match (a.percentage, b.percentage) {
+                            (Some(ap), Some(bp)) => {
+                                let cmp = bp.cmp(&ap); // Descending order for percentage
+                                if cmp == std::cmp::Ordering::Equal {
+                                    a.name.cmp(&b.name) // Ascending order for name
+                                } else {
+                                    cmp
+                                }
+                            }
+                            (Some(_), None) => std::cmp::Ordering::Less, // Non-null comes first
+                            (None, Some(_)) => std::cmp::Ordering::Greater, // Null comes last
+                            (None, None) => a.name.cmp(&b.name), // Ascending order for name
+                        }
+                    });
                     outsides.set(outsides_data);
                     web_sys::console::log_1(&"Outside saved successfully!".into());
                 }
@@ -153,7 +203,21 @@ pub fn outside_page() -> Html {
             match storage::delete_outside(&uuid) {
                 Ok(_) => {
                     let mut outsides_data = storage::get_outsides();
-                    outsides_data.sort_by(|a, b| b.percentage.cmp(&a.percentage));
+                    outsides_data.sort_by(|a, b| {
+                        match (a.percentage, b.percentage) {
+                            (Some(ap), Some(bp)) => {
+                                let cmp = bp.cmp(&ap); // Descending order for percentage
+                                if cmp == std::cmp::Ordering::Equal {
+                                    a.name.cmp(&b.name) // Ascending order for name
+                                } else {
+                                    cmp
+                                }
+                            }
+                            (Some(_), None) => std::cmp::Ordering::Less, // Non-null comes first
+                            (None, Some(_)) => std::cmp::Ordering::Greater, // Null comes last
+                            (None, None) => a.name.cmp(&b.name), // Ascending order for name
+                        }
+                    });
                     outsides.set(outsides_data);
                     web_sys::console::log_1(&"Outside deleted successfully!".into());
                 }
@@ -188,7 +252,13 @@ pub fn outside_page() -> Html {
                                 </CardContent>
                                 <CardFooter>
                                     <div class="card-meta">
-                                        <span class="percentage">{format!("{}%", outside.percentage)}</span>
+                                        {
+                                            if let Some(p) = outside.percentage {
+                                                html! { <span class="percentage">{format!("{}%", p)}</span> }
+                                            } else {
+                                                html! {}
+                                            }
+                                        }
                                     </div>
                                     <div class="card-actions">
                                         <a href={outside.url.clone()} target="_blank" class="url-link">{"🔗"}</a>
@@ -237,13 +307,10 @@ pub fn outside_page() -> Html {
                     />
                     
                     <label for="percentage">{"Percentage:"}</label>
-                    <input 
-                        type="number" 
-                        id="percentage" 
-                        min="0" 
-                        max="100" 
-                        required=true
-                        value={(*percentage_input).to_string()}
+                    <input
+                        type="text"
+                        id="percentage"
+                        value={(*percentage_input).clone()}
                         oninput={on_percentage_change}
                     />
                     
